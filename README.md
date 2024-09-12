@@ -1,18 +1,15 @@
-SmartBrain - FrontEnd
-
-Clone this repo
-Run npm install
-Run npm run dev
-You must add your own PAT key in the src/App.jsx file to connect to Clarifai.
-you must add your USER_ID and APP_ID in the src/App.jsx file
-
-you can add your PAT key from the clarifai profile ---> security ---> scroll down create PAT key
-
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+1. SmartBrain - FrontEnd
 
-Currently, two official plugins are available:
+2. Clone this repo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+3. Run npm install
+
+4. Run npm run dev
+
+5. You must add your own PAT key in the src/App.jsx file to connect to Clarifai.
+
+6. you must add your USER_ID and APP_ID in the src/App.jsx file
+
+7. you can add your PAT key from the clarifai profile ---> security ---> scroll down create PAT key
