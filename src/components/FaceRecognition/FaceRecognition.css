@@ -1,0 +1,32 @@
+.bounding-box {
+    position: absolute;
+    box-shadow: 0 0 0 3px #149df2 inset;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .celeb-name {
+    font-family:sans-serif;
+    visibility: hidden;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    padding: 5px 8px;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    top: -25px; /* Position above the bounding box */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    text-transform:uppercase;
+  }
+  
+  .bounding-box:hover .celeb-name {
+    visibility: visible;
+    opacity: 1;
+  }
