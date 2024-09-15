@@ -9,24 +9,27 @@ import Register from "./components/Register/Register.jsx";
 import { loadAll } from "@tsparticles/all";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 
+const initialState = {
+  input: '',
+  imageUrl: '',
+  box: {},
+  celebrityName: '',
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+};
+
+
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      box: {},
-      celebrityName: '',
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
-    };
+    this.state = initialState;
   }
 
   loadUser = (data) => {
@@ -123,7 +126,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({ isSignedIn: false });
+      this.setState(initialState);
     } else if (route === 'home') {
       this.setState({ isSignedIn: true });
     }
@@ -153,79 +156,56 @@ class App extends Component {
   onInputChange = (event) => {
     this.setState({ input: event.target.value });
   };
-
+    
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-    const PAT = '55a30ed59f7d4a60a71cc2b61a318839';
-    const USER_ID = 'invalid2407';
-    const APP_ID = 'test';
-    const MODEL_ID = 'celebrity-face-detection';
-    const MODEL_VERSION_ID = '2ba4d0b0e53043f38dbbed49e03917b6';
-    const IMAGE_URL = this.state.input;
-
-    const raw = JSON.stringify({
-      "user_app_id": {
-        "user_id": USER_ID,
-        "app_id": APP_ID
-      },
-      "inputs": [
-        {
-          "data": {
-            "image": {
-              "url": IMAGE_URL
-            }
-          }
-        }
-      ]
-    });
-
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Key ' + PAT
-      },
-      body: raw
-    };
-
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
+    
+    fetch('http://localhost:3000/imageurl', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: this.state.input
       })
-      .then(result => {
+    })
+    .then(response => response.json())
+    .then(result => {
         if (result.outputs && result.outputs[0].data.regions) {
-          const regions = result.outputs[0].data.regions;
-          const clarifaiFace = regions[0].region_info.bounding_box;
-          const celebrityName = regions[0].data.concepts[0].name; 
-          const box = this.calculateFaceLocation(result);
-          if (result){
-            fetch('http://localhost:3000/image', {
-              method: 'put',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({
-                id: this.state.user.id
-              })
-            })
-            .then(result => result.json())
-            .then(count => {
-              this.setState(Object.assign(this.state.user, {entries: count}))
-            })
-          }
-          this.displayFaceBox(box, celebrityName);
+            const regions = result.outputs[0].data.regions;
+            const clarifaiFace = regions[0].region_info.bounding_box;
+            const celebrityName = regions[0].data.concepts[0].name; 
+            const box = this.calculateFaceLocation(result);
+            if (result) {
+                fetch('http://localhost:3000/image', {
+                    method: 'put',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: this.state.user.id
+                    })
+                })
+                .then(response => response.json())
+                .then(count => {
+                    this.setState(Object.assign(this.state.user, { entries: count }));
+                })
+                .catch(console.log);
+            }
+            this.displayFaceBox(box, celebrityName);
         } else {
-          console.log('No regions found in the response.');
+            console.log('No regions found in the response.');
         }
-      })
-      .catch(error => console.log('error', error));
-  };
+    })
+    .catch(error => console.log('Error:', error));
+};
 
   render() {
     return (
       <div className="App">
         <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
+        <Particles
+                id="tsparticles"
+                className="particles-background"
+                particlesLoaded={this.particlesLoaded}
+                options={this.options}
+              />
         {this.state.route === 'home'
           ? <div>
               <Logo />
@@ -236,12 +216,6 @@ class App extends Component {
               />
               <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
               <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} celebrityName={this.state.celebrityName}/>
-              <Particles
-                id="tsparticles"
-                className="particles-background"
-                particlesLoaded={this.particlesLoaded}
-                options={this.options}
-              />
             </div>
           : (
             this.state.route === 'signin'
