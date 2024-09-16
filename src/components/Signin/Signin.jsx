@@ -32,7 +32,7 @@ class Signin extends Component {
         //         alert('wrong password or username')
         //     }
         //   })
-        fetch('https://smartbrain-qjcg.onrender.com/signin', {
+        fetch('http://localhost:3000/signin', {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

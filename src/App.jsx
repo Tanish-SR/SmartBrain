@@ -160,7 +160,7 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
     
-    fetch('https://smartbrain-api-zx0v.onrender.com/imageurl', {
+    fetch('http://localhost:3000/imageurl', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -175,7 +175,7 @@ class App extends Component {
             const celebrityName = regions[0].data.concepts[0].name; 
             const box = this.calculateFaceLocation(result);
             if (result) {
-                fetch('https://smartbrain-api-zx0v.onrender.com/image', {
+                fetch('http://localhost:3000/image', {
                     method: 'put',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
